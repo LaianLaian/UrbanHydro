@@ -1,0 +1,78 @@
+This repository contains all codes and relevant resources used in the manuscript "Peri-urban vegetation-induced evapotranspiration fuels urban precipitation". The entire analytical workflow is organized into four sequential steps:
+
+Step 1: Trend Analysis and Placebo Test
+Main script:Step1_compute_Pur_LAIvi_Trends_PlaceboTest.m
+Purpose:
+Calculates linear trends and significance (p-values) of annual urban precipitation (Pur; Fig. 1a) and peri-urban LAI (LAIperi; Fig. 1b) from 2000 to 2021.
+Performs placebo tests (Fig.1d) to assess the empirical significance of LAI–precipitation linkages using 1,000 randomized permutations.
+Output:
+Excel files containing trend estimates, p-values, and placebo test results.
+
+Step 2: ET Modeling and Vegetation-Induced Differences
+① Step2_PTJPLim_Model/
+Contains MATLAB implementation of the improved Priestley–Taylor Jet Propulsion Laboratory model (PT-JPLim) for global evapotranspiration (ET) estimation.
+ET components estimated:
+Interception evaporation (Ei)
+Soil evaporation (Es)
+Transpiration (Et)
+Urban evaporation (Eu)
+
+② Step2_Results_ETperi_diff/
+Contains annual vegetation-induced ET differences in peri-urban areas (ETperi_diff), calculated as the difference between real- and fixed-vegetation scenarios using ArcGIS Zonal Statistics.
+
+③ Step2_compute_ETperidiff_Trends.m
+Converts PT-JPLim results to 0.05° spatial resolution (Fig.2a).
+Computes temporal trends and statistical significance of ETperi_diff (Fig.2b).
+Output:
+Excel files summarizing annual ETperi_diff values and their trends.
+
+Step 3: Moisture Transport via UTrack Model
+Input references:
+city_latlon.xlsx: Latitude and longitude of 1,029 cities
+Step3_ID_ORIG.xlsx: Mapping between city ID and peri-urban area ID
+
+① Step3_UtrackModel_annual.py
+Processes 12-month climatology files per city to compute annual average source contributions of precipitation.
+
+② Step3_UtrackModel_monthly.py
+Similar to above but retains monthly resolution for temporal analysis.
+
+③ Step3_UtrackModel_resample.py
+Resamples UTrack outputs from 0.5° to 0.05° spatial resolution via bilinear interpolation.
+Performs normalization to conserve total moisture contribution.
+
+④ Step3_compute_Purdiff_Trends_Pidiff_Cvege.m
+Uses UTrack model outputs to compute:
+Pur_diff: Precipitation change attributed to vegetation-driven ET and moisture transport (Fig. 3a)
+Trends and p-values of Pur_diff (Fig. 3b)
+Pi_diff: Normalized Pur_diff as % of baseline precipitation (Fig. 3c)
+Cvege: Contribution of vegetation-induced change to total precipitation trend (Fig. 3d)
+Output:
+Excel files with multi-metric city-level indicators.
+
+Step 4: Urban Classification and Group-wise Analysis
+① compute_ΔLAI-wind direction coherence.py
+Analyzes coherence between spatial LAI trends and dominant wind directions.
+
+② compute_Vegetation structure continuity.py
+Computes vegetation structure continuity using a fragmentation index (Structural Integrity Index) from LAI spatial patterns.
+
+③ Step4_Groups.xlsx
+Records the classification of all cities into ten categories based on ΔLAI–wind coherence, vegetation structure, and resulting Pi_diff metrics.
+Fields include:
+City ID, Pi_diff, Areal Pi_diff, and classification category.
+
+④ Step4_compute_City_group_tests.m
+Conducts group-wise statistical tests for Pi_diff across different city types.
+Output:
+Summary statistics written to Excel (used for Fig. 4 panels).
+
+System Requirements
+MATLAB R2021a or later
+Python 3.8+ with xarray, numpy, netCDF4, scipy
+ArcGIS Pro (for Zonal Statistics)
+Microsoft Excel (for result exports and integration)
+
+Reproducibility Note
+All scripts are annotated with detailed comments and structured to allow modular execution. Intermediate and final outputs are provided in each folder for validation and visualization.
+*For questions or issues, please contact the corresponding author.*
